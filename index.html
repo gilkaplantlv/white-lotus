@@ -58,8 +58,11 @@
             left: 20px;
             right: 20px;
             bottom: 20px;
-            background: url('mi-va-restaurant.jpg') center/cover;
+            width: calc(100% - 40px);
+            height: calc(100% - 40px);
+            object-fit: cover;
             border-radius: 15px;
+            z-index: 0;
         }
 
         .puzzle-grid {
@@ -71,10 +74,10 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 3px;
+            z-index: 1;
         }
 
         .puzzle-piece {
-            background: linear-gradient(145deg, #ffffff 0%, #e6f2ff 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -86,8 +89,12 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            background-size: cover;
-            background-position: center;
+        }
+        
+        .puzzle-piece img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         
         .puzzle-piece[data-piece="1"],
@@ -95,14 +102,14 @@
         .puzzle-piece[data-piece="5"],
         .puzzle-piece[data-piece="7"],
         .puzzle-piece[data-piece="9"] {
-            background-image: url('murray-icon.jpg');
+            background: linear-gradient(145deg, #ffffff 0%, #e6f2ff 100%);
         }
         
         .puzzle-piece[data-piece="2"],
         .puzzle-piece[data-piece="4"],
         .puzzle-piece[data-piece="6"],
         .puzzle-piece[data-piece="8"] {
-            background-image: url('tanya-icon.jpg');
+            background: linear-gradient(145deg, #ffffff 0%, #e6f2ff 100%);
         }
 
         .puzzle-piece::before {
@@ -309,17 +316,17 @@
         </div>
 
         <div class="puzzle-section">
-            <div class="background-image"></div>
+            <img src="images/mi-va-restaurant.jpg" alt="Mi Va Restaurant" class="background-image">
             <div class="puzzle-grid">
-                <div class="puzzle-piece" data-piece="1"></div>
-                <div class="puzzle-piece" data-piece="2"></div>
-                <div class="puzzle-piece" data-piece="3"></div>
-                <div class="puzzle-piece" data-piece="4"></div>
-                <div class="puzzle-piece" data-piece="5"></div>
-                <div class="puzzle-piece" data-piece="6"></div>
-                <div class="puzzle-piece" data-piece="7"></div>
-                <div class="puzzle-piece" data-piece="8"></div>
-                <div class="puzzle-piece" data-piece="9"></div>
+                <div class="puzzle-piece" data-piece="1"><img src="images/murray-icon.jpg" alt=""></div>
+                <div class="puzzle-piece" data-piece="2"><img src="images/tanya-icon.jpg" alt=""></div>
+                <div class="puzzle-piece" data-piece="3"><img src="images/murray-icon.jpg" alt=""></div>
+                <div class="puzzle-piece" data-piece="4"><img src="images/tanya-icon.jpg" alt=""></div>
+                <div class="puzzle-piece" data-piece="5"><img src="images/murray-icon.jpg" alt=""></div>
+                <div class="puzzle-piece" data-piece="6"><img src="images/tanya-icon.jpg" alt=""></div>
+                <div class="puzzle-piece" data-piece="7"><img src="images/murray-icon.jpg" alt=""></div>
+                <div class="puzzle-piece" data-piece="8"><img src="images/tanya-icon.jpg" alt=""></div>
+                <div class="puzzle-piece" data-piece="9"><img src="images/murray-icon.jpg" alt=""></div>
             </div>
         </div>
 
@@ -356,12 +363,12 @@
                 </div>
                 
                 <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
-                    <p style="margin-bottom: 10px;">
+                    <p style="margin-bottom: 10px; font-size: 0.9em;">
                         <strong>Mi Va</strong> offers authentic Italian cuisine with a modern twist in the heart of Tel Aviv. 
-                        Known for its fresh handmade pasta, wood-fired pizzas, and innovative seafood dishes.
+                        Known for its fresh handmade pasta and wood-fired pizzas.
                     </p>
                     
-                    <p>
+                    <p style="font-size: 0.9em;">
                         <strong>Chef Shahar Ben Galim</strong> brings years of experience from Italy's finest kitchens, 
                         creating a unique fusion of traditional Italian techniques with local Israeli ingredients.
                     </p>
@@ -474,9 +481,8 @@
                 currentPiece = piece;
                 questionModal.style.display = 'flex';
                 
-                // Get random question
-                const randomIndex = Math.floor(Math.random() * questions.length);
-                const question = questions[randomIndex];
+                // Get specific question for this piece (piece number - 1 because array starts at 0)
+                const question = questions[pieceNumber - 1];
                 currentPiece.questionData = question;
                 
                 document.getElementById('question-text').textContent = question.question;
