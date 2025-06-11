@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>המסע בעקבות הלוטוס הלבן</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e6f2ff 50%, #d6e6f2 100%);
+            min-height: 100vh;
+            color: #263238;
+            padding: 20px;
+            padding-bottom: 50px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .intro-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
+            padding: 30px;
+            text-align: center;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .intro-section h1 {
+            font-family: 'Dancing Script', cursive;
+            color: #1e88e5;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .puzzle-section {
+            position: relative;
+            padding: 20px;
+            background: #f3f6f9;
+            aspect-ratio: 1.5;
+        }
+
+        .background-image {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            background: url('mi-va-restaurant.jpg') center/cover;
+            border-radius: 15px;
+        }
+
+        .puzzle-grid {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+        }
+
+        .puzzle-piece {
+            background: linear-gradient(145deg, #ffffff 0%, #e6f2ff 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .puzzle-piece[data-piece="1"],
+        .puzzle-piece[data-piece="3"],
+        .puzzle-piece[data-piece="5"],
+        .puzzle-piece[data-piece="7"],
+        .puzzle-piece[data-piece="9"] {
+            background-image: url('murray-icon.jpg');
+        }
+        
+        .puzzle-piece[data-piece="2"],
+        .puzzle-piece[data-piece="4"],
+        .puzzle-piece[data-piece="6"],
+        .puzzle-piece[data-piece="8"] {
+            background-image: url('tanya-icon.jpg');
+        }
+
+        .puzzle-piece::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .puzzle-piece:not(.revealed):hover::before {
+            opacity: 1;
+        }
+
+        .puzzle-piece:not(.revealed):hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .puzzle-piece:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .puzzle-piece.revealed {
+            background: transparent;
+            box-shadow: none;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            cursor: default;
+        }
+
+        .completion-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
+            margin: 20px;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            display: none;
+            animation: slideIn 0.5s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .completion-section h2 {
+            color: #1e88e5;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .restaurant-info {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .restaurant-name {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #263238;
+            margin-bottom: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
+        .info-icon {
+            width: 24px;
+            height: 24px;
+            margin-left: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rating {
+            color: #FFA726;
+            font-weight: bold;
+        }
+
+        .star {
+            color: #FFA726;
+        }
+
+        .question-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .question-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .feedback {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            z-index: 2000;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: #4CAF50;
+        }
+
+        .feedback.incorrect {
+            background-color: #f44336;
+        }
+
+        #answer-input {
+            width: 100%;
+            padding: 10px;
+            margin: 20px 0;
+            border: 2px solid #1e88e5;
+            border-radius: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        .submit-btn, .hint-btn {
+            background: #1e88e5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .submit-btn:hover, .hint-btn:hover {
+            background: #1976d2;
+        }
+
+        .hint-display {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-style: italic;
+            display: none;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="intro-section">
+            <h1>המסע בעקבות סדרות הטלוויזיה האהובות ממשיך</h1>
+            <p>
+                האורחים הססגוניים בסדרה הלוטוס הלבן סועדים בחגיגיות בכל ערב באחת ממסעדות הפאר במלון. 
+                רוצה גם לצאת להרפתקאה קולינרית מסתורית - פתרי את החידות הבאות. 
+                כל חידה שתפתרי תחשוף חלק מתמונת היעד הסופי - מסעדה שנבחרה במיוחד עבורך.
+            </p>
+        </div>
+
+        <div class="puzzle-section">
+            <div class="background-image"></div>
+            <div class="puzzle-grid">
+                <div class="puzzle-piece" data-piece="1"></div>
+                <div class="puzzle-piece" data-piece="2"></div>
+                <div class="puzzle-piece" data-piece="3"></div>
+                <div class="puzzle-piece" data-piece="4"></div>
+                <div class="puzzle-piece" data-piece="5"></div>
+                <div class="puzzle-piece" data-piece="6"></div>
+                <div class="puzzle-piece" data-piece="7"></div>
+                <div class="puzzle-piece" data-piece="8"></div>
+                <div class="puzzle-piece" data-piece="9"></div>
+            </div>
+        </div>
+
+        <div class="completion-section" id="completionSection">
+            <h2>🎉 כל הכבוד! השלמת את הפאזל!</h2>
+            <p>גילית את היעד הסופי למסע הקולינרי שלך</p>
+            
+            <div class="restaurant-info" style="text-align: left; direction: ltr;">
+                <div class="restaurant-name">Mi Va</div>
+                <p style="font-style: italic; margin-bottom: 20px;">Italian Kitchen & Bar</p>
+                
+                <div class="info-row">
+                    <span class="info-icon">⭐</span>
+                    <span class="rating">4.7 stars on Google</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-icon">📍</span>
+                    <a href="https://maps.google.com/?q=Mi+Va+122+Dizengoff+Street+Tel+Aviv" 
+                       target="_blank" 
+                       style="color: #1e88e5; text-decoration: none; font-weight: 500;">
+                        122 Dizengoff Street, Tel Aviv
+                    </a>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-icon">🕰️</span>
+                    <span>Your reservation: Tonight at 21:00</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-icon">👨‍🍳</span>
+                    <span>Chef: Shahar Ben Galim</span>
+                </div>
+                
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
+                    <p style="margin-bottom: 10px;">
+                        <strong>Mi Va</strong> offers authentic Italian cuisine with a modern twist in the heart of Tel Aviv. 
+                        Known for its fresh handmade pasta, wood-fired pizzas, and innovative seafood dishes.
+                    </p>
+                    
+                    <p>
+                        <strong>Chef Shahar Ben Galim</strong> brings years of experience from Italy's finest kitchens, 
+                        creating a unique fusion of traditional Italian techniques with local Israeli ingredients.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="feedback" class="feedback"></div>
+
+    <div class="question-modal" id="questionModal">
+        <div class="question-content">
+            <button class="close-btn" onclick="closeQuestionModal()">✕</button>
+            <div class="current-question">
+                <h2>השאלה</h2>
+                <p id="question-text"></p>
+                <input type="text" id="answer-input" placeholder="הכנס תשובה">
+                <div class="hint-section">
+                    <button class="hint-btn" id="hint-btn">תן לי רמז</button>
+                </div>
+                <div id="hint-display" class="hint-display"></div>
+                <div style="margin-top: 30px;">
+                    <button class="submit-btn" id="submit-btn">שלח</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const puzzlePieces = document.querySelectorAll('.puzzle-piece');
+        const questionModal = document.getElementById('questionModal');
+        const feedbackElement = document.getElementById('feedback');
+        const answerInput = document.getElementById('answer-input');
+        const hintDisplay = document.getElementById('hint-display');
+        const hintBtn = document.getElementById('hint-btn');
+        const completionSection = document.getElementById('completionSection');
+
+        // Questions array with acceptable answers
+        const questions = [
+            {
+                question: "Which character is obsessed with having the perfect honeymoon and clashes with hotel staff over a room mix-up?",
+                acceptableAnswers: ["shane patton", "shane", "patton"],
+                hint: "He can't stand not getting what his mom paid for."
+            },
+            {
+                question: "Who is the quirky, wealthy woman traveling with her mother's ashes and a deep need for connection?",
+                acceptableAnswers: ["tanya mcquoid", "tanya", "mcquoid"],
+                hint: "She loves massages, spritzes, and making people uncomfortable."
+            },
+            {
+                question: "Which Gen Z assistant ends up spiraling through bad dates, awkward fashion, and questionable life choices in Italy?",
+                acceptableAnswers: ["portia"],
+                hint: "She's glued to her phone and hates being left out."
+            },
+            {
+                question: "Who is the flirty blonde mom who vacations with her husband and often ditches him to party or gossip?",
+                acceptableAnswers: ["daphne sullivan", "daphne", "sullivan"],
+                hint: "She says she's not *not* aware of what's going on."
+            },
+            {
+                question: "Which character is a feminist corporate leader who tries to relax on vacation but can't help critiquing the patriarchy?",
+                acceptableAnswers: ["nicole mossbacher", "nicole", "mossbacher"],
+                hint: "She's the mom of Olivia and very into podcasts."
+            },
+            {
+                question: "Which guest travels to Asia to \"find herself,\" only to find a handsome man and some serious inner chaos?",
+                acceptableAnswers: ["becky monroe", "becky", "monroe"],
+                hint: "She's spiritual, California-based, and may or may not be lost."
+            },
+            {
+                question: "Who is the quiet, intense grandson who goes to Sicily with his dad and grandpa and has trouble standing up for himself?",
+                acceptableAnswers: ["albie di grasso", "albie", "di grasso", "grasso"],
+                hint: "He's into respect, family legacy, and Lucia."
+            },
+            {
+                question: "Which mysterious wellness guru never speaks at the retreat but hides a secret that unravels everything?",
+                acceptableAnswers: ["rati"],
+                hint: "Her silence says more than words ever could."
+            },
+            {
+                question: "Which local host befriends two American tourists but may have deeper ties to a political agenda?",
+                acceptableAnswers: ["niran"],
+                hint: "He's charming, knows all the best local spots, and isn't what he seems."
+            }
+        ];
+
+        let currentPiece = null;
+        let revealedPieces = new Set();
+
+        puzzlePieces.forEach(piece => {
+            piece.addEventListener('click', function(e) {
+                // Prevent event bubbling
+                e.stopPropagation();
+                
+                const pieceNumber = parseInt(piece.dataset.piece);
+                
+                // Multiple checks to ensure piece isn't already revealed
+                if (revealedPieces.has(pieceNumber)) {
+                    return;
+                }
+                
+                if (piece.classList.contains('revealed')) {
+                    return;
+                }
+                
+                if (piece.style.opacity === '0') {
+                    return;
+                }
+                
+                currentPiece = piece;
+                questionModal.style.display = 'flex';
+                
+                // Get random question
+                const randomIndex = Math.floor(Math.random() * questions.length);
+                const question = questions[randomIndex];
+                currentPiece.questionData = question;
+                
+                document.getElementById('question-text').textContent = question.question;
+                
+                // Reset input and hint
+                answerInput.value = '';
+                hintDisplay.style.display = 'none';
+                hintDisplay.textContent = '';
+                
+                // Focus on input for better UX
+                setTimeout(() => {
+                    answerInput.focus();
+                }, 100);
+            });
+        });
+
+        function closeQuestionModal() {
+            questionModal.style.display = 'none';
+            currentPiece = null;
+        }
+
+        hintBtn.addEventListener('click', () => {
+            if (currentPiece && currentPiece.questionData) {
+                hintDisplay.textContent = currentPiece.questionData.hint;
+                hintDisplay.style.display = 'block';
+            }
+        });
+
+        function checkAnswer() {
+            if (!currentPiece || !currentPiece.questionData) return;
+            
+            const userAnswer = answerInput.value.trim().toLowerCase();
+            const acceptableAnswers = currentPiece.questionData.acceptableAnswers;
+            
+            const isCorrect = acceptableAnswers.some(answer => 
+                userAnswer.includes(answer) || answer.includes(userAnswer)
+            );
+
+            if (isCorrect) {
+                // Correct answer logic
+                feedbackElement.textContent = '✅ תשובה נכונה! פתחת חלק בפאזל';
+                feedbackElement.classList.remove('incorrect');
+                feedbackElement.classList.add('correct');
+                
+                // Reveal puzzle piece
+                currentPiece.classList.add('revealed');
+                const pieceNumber = parseInt(currentPiece.dataset.piece);
+                revealedPieces.add(pieceNumber);
+                
+                // Check if all pieces are revealed
+                if (revealedPieces.size === 9) {
+                    setTimeout(() => {
+                        completionSection.style.display = 'block';
+                        // Scroll to show both puzzle and completion section
+                        const puzzleSection = document.querySelector('.puzzle-section');
+                        const rect = puzzleSection.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        const targetScroll = scrollTop + rect.bottom - (window.innerHeight / 2);
+                        
+                        window.scrollTo({
+                            top: targetScroll,
+                            behavior: 'smooth'
+                        });
+                    }, 1000);
+                }
+
+                // Show feedback
+                feedbackElement.style.display = 'block';
+                
+                // Hide feedback after 2 seconds
+                setTimeout(() => {
+                    feedbackElement.style.display = 'none';
+                }, 2000);
+
+                // Close modal
+                closeQuestionModal();
+            } else {
+                // Incorrect answer logic
+                feedbackElement.textContent = '❌ תשובה לא נכונה. נסי שוב!';
+                feedbackElement.classList.remove('correct');
+                feedbackElement.classList.add('incorrect');
+                
+                // Show feedback
+                feedbackElement.style.display = 'block';
+                
+                // Hide feedback after 2 seconds
+                setTimeout(() => {
+                    feedbackElement.style.display = 'none';
+                }, 2000);
+            }
+        }
+
+        document.getElementById('submit-btn').addEventListener('click', checkAnswer);
+
+        // Allow Enter key to submit
+        answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        // Prevent modal from closing when clicking inside
+        document.querySelector('.question-content').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Close modal when clicking outside
+        questionModal.addEventListener('click', (e) => {
+            if (e.target === questionModal) {
+                closeQuestionModal();
+            }
+        });
+    </script>
+</body>
+</html>
